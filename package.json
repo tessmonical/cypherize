@@ -1,0 +1,26 @@
+{
+  "name": "cypherize",
+  "version": "1.0.0",
+  "description": "A OGM for Neo4j",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/omnomnomtea/cypherize.git"
+  },
+  "keywords": [
+    "ogm",
+    "neo4j"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/omnomnomtea/cypherize/issues"
+  },
+  "homepage": "https://github.com/omnomnomtea/cypherize#readme",
+  "dependencies": {
+    "neo4j-driver": "^1.5.3"
+  }
+}
