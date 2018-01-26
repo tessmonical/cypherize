@@ -5,12 +5,11 @@ const { expect } = require('chai');
 
 require('../../secrets'); // to set environment variables
 const { driver } = require('../../lib/run-driver');
-const { createNode } = require('../../lib/low-level/nodes');
+const { createNode, deleteNode } = require('../../lib/low-level/nodes');
 
 
 describe('Node Tests', function () {
   describe('createNode Tests', function () {
-
     // clear the db before each test
     beforeEach(function () {
       const query = 'MATCH (n) DETACH DELETE n;';
@@ -41,12 +40,43 @@ describe('Node Tests', function () {
         });
     });
 
-
     it('Returns the added node from createNode', function () {
       return createNode('TEST_NODE', { properties: { name: 'test2000' } })
         .then(function (result) {
           expect(result.properties).to.deep.equal({ name: 'test2000' });
         });
+    });
+  });
+
+  describe('deleteNode Tests', function () {
+    beforeEach(function () {
+      // create a node for us to delete later
+      const query = 'CREATE (n:THING {name:"dorkface"}) RETURN n;';
+      const session = driver.session();
+      return session.run(query)
+        .then(function () { session.close(); });
+    });
+
+    it('Can delete a single node', function () {
+      const query = 'MATCH (n:THING) WHERE n.name="dorkface" RETURN n;';
+      const session = driver.session();
+      const nodePromise = session.run(query)
+        .then(function (results) {
+          return results.records[0].get(0);
+        })
+        .then(function (node) {
+          console.log(node);
+          return deleteNode(node, { logging: true });
+        })
+        .then(function () {
+          return session.run('MATCH (n:THING) RETURN n;');
+        })
+        .then(function (results) {
+          const nodes = results.records;
+          expect(nodes).to.have.a.lengthOf(0);
+        });
+
+      return nodePromise;
     });
   });
 
