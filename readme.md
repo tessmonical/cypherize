@@ -8,4 +8,5 @@ Don't use this yet, it's not ready!
 Very very much in development still. Tests are being written, bugs are being found, etc. I'll update this readme when the basics are here.
 
 ## Caveats and warnings
-- Currently, we DO NOT escape key names when setting a property on a node. If you must use user-supplied key names, be sure to escape them yourself to avoid injection attacks
+- Key names for properties on a node/connection set using Cypherize must adhere to the following rules
+  - Alphanumeric and underscore are the only characters allowed
