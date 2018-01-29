@@ -65,8 +65,7 @@ describe('Node Tests', function () {
           return results.records[0].get(0);
         })
         .then(function (node) {
-          console.log(node);
-          return deleteNode(node, { logging: console.log });
+          return deleteNode(node, {});
         })
         .then(function () {
           return session.run('MATCH (n:THING) RETURN n;');
