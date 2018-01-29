@@ -5,7 +5,7 @@ const { expect } = require('chai');
 
 require('../../secrets'); // to set environment variables
 const { driver } = require('../../lib/run-driver');
-const { createNode, deleteNode, setPropertyOnNode } = require('../../lib/low-level/nodes');
+const { createNode, deleteNode, setPropertyOnNode, setAllPropertiesOnNode } = require('../../lib/low-level/nodes');
 
 
 describe('Node Tests', function () {
@@ -115,6 +115,33 @@ describe('Node Tests', function () {
         .then(function (returnedNode) {
           expect(returnedNode.properties).to.contain.property('bestFriendName', 'timothy');
         });
+    });
+  });
+
+  describe('setAllPropertiesOnNode tests', function () {
+    beforeEach(function () {
+      // create a node for us to delete later
+      const query = 'CREATE (n:THING {name:"Toffee", _id:"ididid"}) RETURN n;';
+      const session = driver.session();
+      return session.run(query)
+        .then(function () { session.close(); });
+    });
+
+    it('overwrites all properties on the node', function () {
+      const session = driver.session();
+      return session.run('MATCH (n:THING) WHERE n.name="Toffee" RETURN n;')
+        .then(function (results) {
+          const node = results.records[0].get(0);
+          return setAllPropertiesOnNode(node, { properties: { favoriteFood: 'tuna', name: 'cat' } });
+        })
+        .then(function () {
+          return session.run('MATCH (n:THING) WHERE n.name="cat" RETURN n;');
+        })
+        .then(function (results) {
+          const node = results.records[0].get(0);
+          expect(node.properties).to.contain.property('favoriteFood', 'tuna');
+        })
+        .catch(console.error);
     });
   });
 
