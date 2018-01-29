@@ -83,7 +83,7 @@ describe('Node Tests', function () {
   describe('setPropertyOnNode tests', function () {
     beforeEach(function () {
       // create a node for us to delete later
-      const query = 'CREATE (n:THING {name:"dorkface2", _id:"test_id"}) RETURN n;';
+      const query = 'CREATE (n:THING {name:"mochi", _id:"test_id"}) RETURN n;';
       const session = driver.session();
       return session.run(query)
         .then(function () { session.close(); });
@@ -91,13 +91,13 @@ describe('Node Tests', function () {
 
     it('Correctly adds the property', function () {
       const session = driver.session();
-      return session.run('MATCH (n:THING) WHERE n.name="dorkface2" RETURN n;')
+      return session.run('MATCH (n:THING) WHERE n.name="mochi" RETURN n;')
         .then(function (results) {
           const node = results.records[0].get(0);
           return setPropertyOnNode(node, { property: { favoriteFood: 'tuna' } });
         })
         .then(function () {
-          return session.run('MATCH (n:THING) WHERE n.name="dorkface2" RETURN n;');
+          return session.run('MATCH (n:THING) WHERE n.name="mochi" RETURN n;');
         })
         .then(function (results) {
           const node = results.records[0].get(0);
@@ -107,7 +107,7 @@ describe('Node Tests', function () {
 
     it('returns the modified node', function () {
       const session = driver.session();
-      return session.run('MATCH (n:THING) WHERE n.name="dorkface2" RETURN n;')
+      return session.run('MATCH (n:THING) WHERE n.name="mochi" RETURN n;')
         .then(function (results) {
           const node = results.records[0].get(0);
           return setPropertyOnNode(node, { property: { bestFriendName: 'timothy' } });
