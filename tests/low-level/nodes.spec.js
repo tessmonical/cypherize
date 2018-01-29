@@ -5,7 +5,12 @@ const { expect } = require('chai');
 
 require('../../secrets'); // to set environment variables
 const { driver } = require('../../lib/run-driver');
-const { createNode, deleteNode, setPropertyOnNode, setAllPropertiesOnNode } = require('../../lib/low-level/nodes');
+const {
+  createNode,
+  deleteNode,
+  setPropertyOnNode,
+  setAllPropertiesOnNode,
+} = require('../../lib/low-level/nodes');
 
 
 describe('Node Tests', function () {
@@ -31,7 +36,7 @@ describe('Node Tests', function () {
             .then(function (records) {
               expect(records).to.have.length(1); // adds it once only
               const singleRecord = records[0].get(0);
-              // check that it adds all the properties and nothing else
+              // check that it adds all the properties
               expect(singleRecord.properties).to.have.property('name', 'test');
             })
             .then(function () {
@@ -121,15 +126,19 @@ describe('Node Tests', function () {
   describe('setAllPropertiesOnNode tests', function () {
     beforeEach(function () {
       // create a node for us to delete later
-      const query = 'CREATE (n:THING {name:"Toffee", _id:"ididid"}) RETURN n;';
       const session = driver.session();
-      return session.run(query)
-        .then(function () { session.close(); });
+      return session.run('MATCH (n) DETACH DELETE n;')
+        .then(function () {
+          const query = 'CREATE (n:THING {name:"Toffee", _id:"ididid"}) RETURN n;';
+          return session.run(query);
+        })
+        .then(function () { return session.close(); })
+        .catch(console.error);
     });
 
     it('overwrites all properties on the node', function () {
       const session = driver.session();
-      return session.run('MATCH (n:THING) WHERE n.name="Toffee" RETURN n;')
+      return session.run('MATCH (n:THING) WHERE n._id="ididid" RETURN n;')
         .then(function (results) {
           const node = results.records[0].get(0);
           return setAllPropertiesOnNode(node, { properties: { favoriteFood: 'tuna', name: 'cat' } });
@@ -142,6 +151,19 @@ describe('Node Tests', function () {
           expect(node.properties).to.contain.property('favoriteFood', 'tuna');
         })
         .catch(console.error);
+    });
+
+
+    it('returns the modified node', function () {
+      const session = driver.session();
+      return session.run('MATCH (n:THING) WHERE n._id="ididid" RETURN n;')
+        .then(function (results) {
+          const node = results.records[0].get(0);
+          return setAllPropertiesOnNode(node, { properties: { bestFriendName: 'timothy' } });
+        })
+        .then(function (returnedNode) {
+          expect(returnedNode.properties).to.contain.property('bestFriendName', 'timothy');
+        });
     });
   });
 
