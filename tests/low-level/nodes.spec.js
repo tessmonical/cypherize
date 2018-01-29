@@ -5,7 +5,7 @@ const { expect } = require('chai');
 
 require('../../secrets'); // to set environment variables
 const { driver } = require('../../lib/run-driver');
-const { createNode, deleteNode } = require('../../lib/low-level/nodes');
+const { createNode, deleteNode, setPropertyOnNode } = require('../../lib/low-level/nodes');
 
 
 describe('Node Tests', function () {
@@ -78,6 +78,32 @@ describe('Node Tests', function () {
         });
 
       return nodePromise;
+    });
+  });
+
+  describe('Add Property to node tests', function () {
+    beforeEach(function () {
+      // create a node for us to delete later
+      const query = 'CREATE (n:THING {name:"dorkface2", _id:"test_id"}) RETURN n;';
+      const session = driver.session();
+      return session.run(query)
+        .then(function () { session.close(); });
+    });
+
+    it('Correctly adds the property', function () {
+      const session = driver.session();
+      return session.run('MATCH (n:THING) WHERE n.name="dorkface2" RETURN n;')
+        .then(function (results) {
+          const node = results.records[0].get(0);
+          return setPropertyOnNode(node, { property: { favoriteFood: 'tuna' } });
+        })
+        .then(function () {
+          return session.run('MATCH (n:THING) WHERE n.name="dorkface2" RETURN n;');
+        })
+        .then(function (results) {
+          const node = results.records[0].get(0);
+          expect(node.properties).to.contain.property('favoriteFood', 'tuna');
+        });
     });
   });
 
