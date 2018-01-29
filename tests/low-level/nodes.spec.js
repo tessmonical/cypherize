@@ -80,7 +80,7 @@ describe('Node Tests', function () {
     });
   });
 
-  describe('Add Property to node tests', function () {
+  describe('setPropertyOnNode tests', function () {
     beforeEach(function () {
       // create a node for us to delete later
       const query = 'CREATE (n:THING {name:"dorkface2", _id:"test_id"}) RETURN n;';
@@ -102,6 +102,18 @@ describe('Node Tests', function () {
         .then(function (results) {
           const node = results.records[0].get(0);
           expect(node.properties).to.contain.property('favoriteFood', 'tuna');
+        });
+    });
+
+    it('returns the modified node', function () {
+      const session = driver.session();
+      return session.run('MATCH (n:THING) WHERE n.name="dorkface2" RETURN n;')
+        .then(function (results) {
+          const node = results.records[0].get(0);
+          return setPropertyOnNode(node, { property: { bestFriendName: 'timothy' } });
+        })
+        .then(function (returnedNode) {
+          expect(returnedNode.properties).to.contain.property('bestFriendName', 'timothy');
         });
     });
   });
