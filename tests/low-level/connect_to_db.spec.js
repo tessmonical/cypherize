@@ -10,7 +10,7 @@ describe('Sanity Tests', function () {
   });
 });
 
-describe('Connection', function () {
+describe('DB working', function () {
   it('Connects to the database without erroring', function () {
     require('../../secrets');
     require('../../lib/index');

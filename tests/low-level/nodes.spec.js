@@ -4,7 +4,7 @@
 const { expect } = require('chai');
 
 require('../../secrets'); // to set environment variables
-const { driver } = require('../../lib/run-driver');
+const { driver } = require('../../lib');
 const {
   createNode,
   deleteNode,
@@ -167,8 +167,8 @@ describe('Node Tests', function () {
     });
   });
 
-  after(function () {
-    driver.close();
-  });
+  // after(function () {
+  //   driver.close();
+  // });
 });
 
