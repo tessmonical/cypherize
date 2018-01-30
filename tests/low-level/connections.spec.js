@@ -64,4 +64,33 @@ describe('Connection Tests', function () {
         .then(function () { session.close(); });
     });
   });
+
+  describe('deleteConnection', function () {
+    beforeEach(function () {
+      // Ron loves Hermione, who loves her back :)
+      const query =
+        'CREATE (n1:CHARACTER {name:"Ron Weasley", _id:"hpron"})-[:LOVES {_id:"ronmionehr321"}]->(n2:CHARACTER {name:"Hermione Granger", _id:"hphermione"})-[:LOVES {_id:"ronmionerh123"}]->(n1) RETURN n1,n2;';
+      const session = driver.session();
+      return session.run(query)
+        .then(function () { session.close(); });
+    });
+
+    it('can delete a connection', function () {
+      // Hermione loves someone-- let's return that "love" connection
+      const query = 'MATCH (hermione:CHARACTER)-[love:LOVES]->(:CHARACTER) WHERE hermione.name="Hermione Granger" RETURN love;';
+      const session = driver.session();
+      return session.run(query)
+        .then(function (results) {
+          const connection = results.records[0].get(0);
+          deleteConnection(connection); // oh no! Hermione has fallen out of love
+        })
+        .then(function () {
+          return session.run(query);
+        })
+        .then(function (results) {
+          expect(results.records).to.have.lengthOf(0); // Hermione loves no one now
+        })
+        .then(function () { session.close(); });
+    });
+  });
 });
