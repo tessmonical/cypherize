@@ -8,6 +8,7 @@ const { driver } = require('../../lib');
 const {
   createConnection,
   deleteConnection,
+  findById,
 } = require('../../lib/low-level/connection');
 
 describe('Connection Tests', function () {
@@ -24,7 +25,8 @@ describe('Connection Tests', function () {
     afterEach(function () {
       const query = 'MATCH (n) DETACH DELETE n;';
       const session = driver.session();
-      return session.run(query);
+      return session.run(query)
+        .then(function () { session.close(); });
     });
 
     it('Creates the connection', function () {
@@ -91,6 +93,40 @@ describe('Connection Tests', function () {
           expect(results.records).to.have.lengthOf(0); // Hermione loves no one now
         })
         .then(function () { session.close(); });
+    });
+
+    // clear DB after each test
+    afterEach(function () {
+      const query = 'MATCH (n) DETACH DELETE n;';
+      const session = driver.session();
+      return session.run(query)
+        .then(function () {
+          session.close();
+        });
+    });
+  });
+
+  describe('findById', function () {
+    beforeEach(function () {
+      const query = 'CREATE (n1:CHARACTER {name:"Harry Potter", _id:"hpharry1980"})-[:LOVES {_id:"ginnyharry4eva99999"}]->(n2:CHARACTER {name:"Ginny Weasley", _id:"hpGinny3q4957"})-[:LOVES {_id:"ginnyharry4eva11111", random_attribute:"best ship" }]->(n1) RETURN n1,n2;';
+      const session = driver.session();
+      return session.run(query)
+        .then(function () { session.close(); });
+    });
+    // clear DB after each test
+    afterEach(function () {
+      const query = 'MATCH (n) DETACH DELETE n;';
+      const session = driver.session();
+      return session.run(query)
+        .then(function () { session.close(); });
+    });
+
+    it('Returns the correct node', function () {
+      return findById('ginnyharry4eva11111')
+        .then(function (connection) {
+          expect(connection.properties).to.include({ random_attribute: 'best ship' });
+        })
+        .catch(console.error);
     });
   });
 });

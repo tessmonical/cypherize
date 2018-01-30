@@ -10,6 +10,7 @@ const {
   deleteNode,
   setPropertyOnNode,
   setAllPropertiesOnNode,
+  findById,
 } = require('../../lib/low-level/nodes');
 
 
@@ -17,6 +18,13 @@ describe('Node Tests', function () {
   describe('createNode Tests', function () {
     // clear the db before each test
     beforeEach(function () {
+      const query = 'MATCH (n) DETACH DELETE n;';
+      const session = driver.session();
+      return session.run(query)
+        .then(function () { session.close(); });
+    });
+    // clear DB after each test
+    afterEach(function () {
       const query = 'MATCH (n) DETACH DELETE n;';
       const session = driver.session();
       return session.run(query)
@@ -61,6 +69,13 @@ describe('Node Tests', function () {
       return session.run(query)
         .then(function () { session.close(); });
     });
+    // clear DB after each test
+    afterEach(function () {
+      const query = 'MATCH (n) DETACH DELETE n;';
+      const session = driver.session();
+      return session.run(query)
+        .then(function () { session.close(); });
+    });
 
     it('Can delete a single node', function () {
       const query = 'MATCH (n:THING) WHERE n.name="dorkface" RETURN n;';
@@ -89,6 +104,13 @@ describe('Node Tests', function () {
     beforeEach(function () {
       // create a node for us to delete later
       const query = 'CREATE (n:THING {name:"mochi", _id:"test_id"}) RETURN n;';
+      const session = driver.session();
+      return session.run(query)
+        .then(function () { session.close(); });
+    });
+    // clear DB after each test
+    afterEach(function () {
+      const query = 'MATCH (n) DETACH DELETE n;';
       const session = driver.session();
       return session.run(query)
         .then(function () { session.close(); });
@@ -135,6 +157,13 @@ describe('Node Tests', function () {
         .then(function () { return session.close(); })
         .catch(console.error);
     });
+    // clear DB after each test
+    afterEach(function () {
+      const query = 'MATCH (n) DETACH DELETE n;';
+      const session = driver.session();
+      return session.run(query)
+        .then(function () { session.close(); });
+    });
 
     it('overwrites all properties on the node', function () {
       const session = driver.session();
@@ -164,6 +193,30 @@ describe('Node Tests', function () {
         .then(function (returnedNode) {
           expect(returnedNode.properties).to.contain.property('bestFriendName', 'timothy');
         });
+    });
+  });
+
+
+  describe('findById', function () {
+    beforeEach(function () {
+      const query = 'CREATE (n1:CHARACTER {name:"Harry Potter", _id:"hpharry1980"})-[:LOVES {_id:"ginnyharry4eva99999"}]->(n2:CHARACTER {name:"Ginny Weasley", _id:"hpGinny3q4957"})-[:LOVES {_id:"ginnyharry4eva11111"}]->(n1) RETURN n1,n2;';
+      const session = driver.session();
+      return session.run(query);
+    });
+    // clear DB after each test
+    afterEach(function () {
+      const query = 'MATCH (n) DETACH DELETE n;';
+      const session = driver.session();
+      return session.run(query)
+        .then(function () { session.close(); });
+    });
+
+    it('Returns the correct node', function () {
+      return findById('hpGinny3q4957')
+        .then(function (node) {
+          expect(node.properties).to.include({ name: 'Ginny Weasley' });
+        })
+        .catch(console.error);
     });
   });
 
