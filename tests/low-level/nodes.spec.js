@@ -266,9 +266,9 @@ describe('Node Tests', function () {
         });
     });
 
-    it('takes a match parameter that matches all specified properties', function () {
+    it('takes a where parameter that matches all specified properties', function () {
       return findNodes({
-        match: { name: 'Karkat Vantas' },
+        where: { name: 'Karkat Vantas' },
       })
         .then(function (nodeList) {
           expect(nodeList).to.have.lengthOf(1);
