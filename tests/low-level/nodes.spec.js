@@ -11,7 +11,7 @@ const {
   setPropertyOnNode,
   setAllPropertiesOnNode,
   findById,
-  findAllNodes,
+  findNodes,
 } = require('../../lib/low-level/nodes');
 
 
@@ -241,20 +241,20 @@ describe('Node Tests', function () {
     });
 
     it('is a function', function () {
-      expect(findAllNodes).to.be.a('function');
+      expect(findNodes).to.be.a('function');
     });
 
     it('returns an array', function () {
-      expect(findAllNodes({})).to.be.an('array');
+      expect(findNodes({})).to.be.an('array');
     });
 
     it('finds the correct number of nodes', function () {
-      const nodeList = findAllNodes({ label: 'CHARACTER' });
+      const nodeList = findNodes({ label: 'CHARACTER' });
       expect(nodeList).to.have.lengthOf(2);
     });
 
     it('returns array of objects, with the correct properties', function () {
-      const nodeList = findAllNodes({ label: 'CHARACTER' });
+      const nodeList = findNodes({ label: 'CHARACTER' });
       expect(nodeList).to.deep.include(
         { label: 'CHARACTER', name: 'Dave Strider', _id: 'TG1234567890' },
         { label: 'CHARACTER', name: 'Karkat Vantas', _id: 'CG1234567890' },
@@ -262,11 +262,11 @@ describe('Node Tests', function () {
     });
 
     it('takes a match parameter that matches all specified properties', function () {
-      const nodeList = findAllNodes({
+      const nodeList = findNodes({
         match: { name: 'Karkat Vantas' },
       });
       expect(nodeList).to.have.lengthOf(1);
-      expect(nodeList).to.deep.include({ label: 'CHARACTER', name: 'Karkat Vantas', _id: 'CG1234567890' });ƒ
+      expect(nodeList).to.deep.include({ label: 'CHARACTER', name: 'Karkat Vantas', _id: 'CG1234567890' });
     });
   });
 });
