@@ -2,7 +2,7 @@
 /* eslint-env node, mocha, chai */
 
 const { expect } = require('chai');
-const { escape } = require('../../lib/low-level/utils');
+const { escape, buildWhere } = require('../../lib/low-level/utils');
 
 describe('Utiity Function Tests', function () {
   describe('Escape function', function () {
@@ -12,5 +12,15 @@ describe('Utiity Function Tests', function () {
       expect(escaped).to.equal('thingthatisunsafeDETACHDELETE');
     });
   });
-});
 
+  describe('buildWhere function', function () {
+    it('Builds a "WHERE" subquery', function () {
+      const where = {
+        name: 'Pandas',
+        population: 5,
+      };
+      const whereString = buildWhere(where);
+      expect(whereString).to.equal('WHERE n.name=$name, n.population=$population');
+    });
+  });
+});
