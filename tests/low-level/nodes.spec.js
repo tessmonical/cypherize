@@ -277,9 +277,8 @@ describe('Node Tests', function () {
       })
         .then(function (nodeList) {
           expect(nodeList).to.have.lengthOf(1);
-          expect(nodeList.map(node => node.properties)).to.deep.include(
-            { name: 'Karkat Vantas', _id: 'CG1234567890' }
-          );
+          expect(nodeList.map(node => node.properties))
+            .to.deep.include({ name: 'Karkat Vantas', _id: 'CG1234567890' });
         });
     });
   });
