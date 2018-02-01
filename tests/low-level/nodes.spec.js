@@ -260,7 +260,8 @@ describe('Node Tests', function () {
 
     it('returns array of objects, with the correct properties', function () {
       return findNodes({
-        label: 'CHARACTER', logging: console.log,
+        label: 'CHARACTER',
+        logging: console.log,
       })
         .then(function (nodeList) {
           expect(nodeList.map(node => node.properties)).to.deep.include(
