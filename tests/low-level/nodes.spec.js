@@ -261,7 +261,6 @@ describe('Node Tests', function () {
     it('returns array of objects, with the correct properties', function () {
       return findNodes({
         label: 'CHARACTER',
-        logging: console.log,
       })
         .then(function (nodeList) {
           expect(nodeList.map(node => node.properties)).to.deep.include(
@@ -274,7 +273,6 @@ describe('Node Tests', function () {
     it('takes a where parameter that matches all specified properties', function () {
       return findNodes({
         where: { name: 'Karkat Vantas' },
-        logging: console.log,
       })
         .then(function (nodeList) {
           expect(nodeList).to.have.lengthOf(1);
