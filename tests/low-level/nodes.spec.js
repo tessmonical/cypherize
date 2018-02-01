@@ -245,7 +245,10 @@ describe('Node Tests', function () {
     });
 
     it('returns an array', function () {
-      expect(findNodes({})).to.be.an('array');
+      return findNodes({ label: 'CHARACTER' })
+        .then(function (foundNodes) {
+          expect(foundNodes).to.be.an('array');
+        });
     });
 
     it('finds the correct number of nodes', function () {
@@ -254,19 +257,23 @@ describe('Node Tests', function () {
     });
 
     it('returns array of objects, with the correct properties', function () {
-      const nodeList = findNodes({ label: 'CHARACTER' });
-      expect(nodeList).to.deep.include(
-        { label: 'CHARACTER', name: 'Dave Strider', _id: 'TG1234567890' },
-        { label: 'CHARACTER', name: 'Karkat Vantas', _id: 'CG1234567890' },
-      );
+      return findNodes({ label: 'CHARACTER' })
+        .then(function (nodeList) {
+          expect(nodeList).to.deep.include(
+            { label: 'CHARACTER', name: 'Dave Strider', _id: 'TG1234567890' },
+            { label: 'CHARACTER', name: 'Karkat Vantas', _id: 'CG1234567890' },
+          );
+        });
     });
 
     it('takes a match parameter that matches all specified properties', function () {
-      const nodeList = findNodes({
+      return findNodes({
         match: { name: 'Karkat Vantas' },
-      });
-      expect(nodeList).to.have.lengthOf(1);
-      expect(nodeList).to.deep.include({ label: 'CHARACTER', name: 'Karkat Vantas', _id: 'CG1234567890' });
+      })
+        .then(function (nodeList) {
+          expect(nodeList).to.have.lengthOf(1);
+          expect(nodeList).to.deep.include({ label: 'CHARACTER', name: 'Karkat Vantas', _id: 'CG1234567890' });
+        });
     });
   });
 });
