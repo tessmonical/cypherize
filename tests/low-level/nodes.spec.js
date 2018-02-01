@@ -11,6 +11,7 @@ const {
   setPropertyOnNode,
   setAllPropertiesOnNode,
   findById,
+  findAllNodes,
 } = require('../../lib/low-level/nodes');
 
 
@@ -192,7 +193,8 @@ describe('Node Tests', function () {
         })
         .then(function (returnedNode) {
           expect(returnedNode.properties).to.contain.property('bestFriendName', 'timothy');
-        });
+        })
+        .then(function () { session.close(); });
     });
   });
 
@@ -201,8 +203,10 @@ describe('Node Tests', function () {
     beforeEach(function () {
       const query = 'CREATE (n1:CHARACTER {name:"Harry Potter", _id:"hpharry1980"})-[:LOVES {_id:"ginnyharry4eva99999"}]->(n2:CHARACTER {name:"Ginny Weasley", _id:"hpGinny3q4957"})-[:LOVES {_id:"ginnyharry4eva11111"}]->(n1) RETURN n1,n2;';
       const session = driver.session();
-      return session.run(query);
+      return session.run(query)
+        .then(function () { session.close(); });
     });
+
     // clear DB after each test
     afterEach(function () {
       const query = 'MATCH (n) DETACH DELETE n;';
@@ -220,8 +224,50 @@ describe('Node Tests', function () {
     });
   });
 
-  // after(function () {
-  //   driver.close();
-  // });
+  describe('findNodes', function () {
+    beforeEach(function () {
+      const query = 'CREATE (n1:CHARACTER {name:"Dave Strider", _id:"TG1234567890"})-[:LOVES {_id:"davekat"}]->(n2:CHARACTER {name:"Karkat Vantas", _id:"CG1234567890"})-[:LOVES {_id:"daveisabuttbuthesmybuttiguess"}]->(n1), (n1)-[:FAVE_BEVERAGE {_id:"gottahavethatAJ"}]->(n3:BEVERAGE {_id: "aj1234567890", name:"Apple Juice"}) RETURN n1,n2,n3;';
+      const session = driver.session();
+      return session.run(query)
+        .then(function () { session.close(); });
+    });
+
+    // clear DB after each test
+    afterEach(function () {
+      const query = 'MATCH (n) DETACH DELETE n;';
+      const session = driver.session();
+      return session.run(query)
+        .then(function () { session.close(); });
+    });
+
+    it('is a function', function () {
+      expect(findAllNodes).to.be.a('function');
+    });
+
+    it('returns an array', function () {
+      expect(findAllNodes({})).to.be.an('array');
+    });
+
+    it('finds the correct number of nodes', function () {
+      const nodeList = findAllNodes({ label: 'CHARACTER' });
+      expect(nodeList).to.have.lengthOf(2);
+    });
+
+    it('returns things as objects with the correct properties', function () {
+      const nodeList = findAllNodes({ label: 'CHARACTER' });
+      expect(nodeList).to.deep.include(
+        { label: 'CHARACTER', name: 'Dave Strider', _id: 'TG1234567890' },
+        { label: 'CHARACTER', name: 'Karkat Vantas', _id: 'CG1234567890' },
+      );
+    });
+
+    it('takes a match parameter that matches all specified properties', function () {
+      const nodeList = findAllNodes({
+        match: { name: 'Karkat Vantas' },
+      });
+      expect(nodeList).to.have.lengthOf(1);
+      expect(nodeList).to.deep.include({ label: 'CHARACTER', name: 'Karkat Vantas', _id: 'CG1234567890' });
+    });
+  });
 });
 
