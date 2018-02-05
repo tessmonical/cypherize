@@ -2,7 +2,7 @@
 /* eslint-env node, mocha, chai */
 
 const { expect } = require('chai');
-const { findNodes } = require('../../lib/low-level/nodes')
+const { findNodes } = require('../../lib/low-level/nodes');
 const { defineModel } = require('../../lib/model');
 const { driver } = require('../../lib');
 
@@ -14,11 +14,11 @@ describe('Model functions', function () {
       name: 'character',
       fields: ['name', 'gender'],
     });
-    const session = driver.session()
+    const session = driver.session();
     session.run('MATCH (n) DETACH DELETE (n)')
       .then(function () {
         session.close();
-      })
+      });
   });
 
   it('Creates the node in the database', function () {
