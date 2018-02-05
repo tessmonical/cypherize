@@ -84,7 +84,7 @@ describe('Connection Tests', function () {
       return session.run(query)
         .then(function (results) {
           const connection = results.records[0].get(0);
-          deleteConnection(connection); // oh no! Hermione has fallen out of love
+          return deleteConnection(connection); // oh no! Hermione has fallen out of love
         })
         .then(function () {
           return session.run(query);
