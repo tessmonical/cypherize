@@ -22,10 +22,10 @@ describe('Defining a Model', function () {
   });
 
   it('defineModel returns function with correct prototype methods', function () {
-    expect(Model.prototype.findAll).to.be.a('function');
-    expect(Model.prototype.findOne).to.be.a('function');
-    expect(Model.prototype.create).to.be.a('function');
-    expect(Model.prototype.delete).to.be.a('function');
+    expect(Model.findAll).to.be.a('function');
+    expect(Model.findOne).to.be.a('function');
+    expect(Model.create).to.be.a('function');
+    expect(Model.delete).to.be.a('function');
     expect(Model.prototype.setProperty).to.be.a('function');
   });
 
