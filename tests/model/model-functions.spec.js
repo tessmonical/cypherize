@@ -32,6 +32,8 @@ describe('Model functions', function () {
       .then(function (nodes) {
         expect(nodes).to.have.lengthOf(1);
         expect(nodes[0].properties).to.have.property('name', 'Hermione Granger');
+        expect(nodes[0].properties).to.have.property('gender', 'female');
+        expect(nodes[0].properties).to.have.property('_id');
       });
   });
 
