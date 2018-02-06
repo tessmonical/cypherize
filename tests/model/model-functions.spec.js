@@ -67,43 +67,51 @@ describe('Model functions', function () {
         fields: ['title', 'text', 'rating'],
       });
       const session = driver.session();
-      session.run('MATCH (n) DETACH DELETE (n)')
+      return session.run('MATCH (n) DETACH DELETE (n)')
         .then(function () {
           session.close();
+        })
+        .then(function () {
+          return Promise.all([
+            createNode('PODFIC', {
+              properties: {
+                title: 'The Best Fanfic Ever',
+                text: 'Ron and Hermione went on a date. The End.',
+                rating: 'E for everyone',
+              },
+            }),
+            createNode('FANFIC', {
+              properties: {
+                title: 'The Best Fanfic Ever',
+                text: 'Ron and Hermione went on a date. The End.',
+                rating: 'E for everyone',
+              },
+            }),
+            createNode('FANFIC', {
+              properties: {
+                title: 'The Worst Fanfic Ever',
+                text: 'Ron and Hermione broke up. The End.',
+                rating: 'N for no one',
+              },
+            }),
+            createNode('FANFIC', {
+              properties: {
+                title: 'The Most Scandelous Fanfic Ever',
+                text: 'Harry and Draco kiss passionately. The End.',
+                rating: 'T for teens',
+              },
+            }),
+          ]);
         });
     });
 
-    beforeEach(function () {
-      return Promise.all([
-        createNode('PODFIC', {
-          properties: {
-            title: 'The Best Fanfic Ever',
-            text: 'Ron and Hermione went on a date. The End.',
-            rating: 'E for everyone',
-          },
-        }),
-        createNode('FANFIC', {
-          properties: {
-            title: 'The Best Fanfic Ever',
-            text: 'Ron and Hermione went on a date. The End.',
-            rating: 'E for everyone',
-          },
-        }),
-        createNode('FANFIC', {
-          properties: {
-            title: 'The Worst Fanfic Ever',
-            text: 'Ron and Hermione broke up. The End.',
-            rating: 'N for no one',
-          },
-        }),
-        createNode('FANFIC', {
-          properties: {
-            title: 'The Most Scandelous Fanfic Ever',
-            text: 'Harry and Draco kiss passionately. The End.',
-            rating: 'T for teens',
-          },
-        }),
-      ]);
+    it('Can find all models of specific type', function () {
+      return Fanfic.findAll({
+        logging: console.log.bind(console),
+      })
+        .then(function (fanfics) {
+          expect(fanfics).to.have.lengthOf(3);
+        });
     });
 
     it('Can find based on key', function () {
