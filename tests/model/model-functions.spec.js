@@ -106,9 +106,7 @@ describe('Model functions', function () {
     });
 
     it('Can find all models of specific type', function () {
-      return Fanfic.findAll({
-        logging: console.log.bind(console),
-      })
+      return Fanfic.findAll()
         .then(function (fanfics) {
           expect(fanfics).to.have.lengthOf(3);
         });
@@ -123,6 +121,61 @@ describe('Model functions', function () {
         .then((foundArr) => {
           expect(foundArr).to.have.lengthOf(1);
           expect(foundArr[0]).to.have.property('title', 'The Worst Fanfic Ever');
+        });
+    });
+  });
+
+  describe('Model.findOne', function () {
+    let Podfic;
+    before(function () {
+      Podfic = defineModel({
+        name: 'podfic',
+        fields: ['title', 'text', 'rating'],
+      });
+      const session = driver.session();
+      return session.run('MATCH (n) DETACH DELETE (n)')
+        .then(function () {
+          session.close();
+        })
+        .then(function () {
+          return Promise.all([
+            createNode('PODFIC', {
+              properties: {
+                title: 'The Best Fanfic Ever',
+                text: 'Ron and Hermione went on a date. The End.',
+                rating: 'E for everyone',
+              },
+            }),
+            createNode('FANFIC', {
+              properties: {
+                title: 'The Best Fanfic Ever',
+                text: 'Ron and Hermione went on a date. The End.',
+                rating: 'E for everyone',
+              },
+            }),
+            createNode('PODFIC', {
+              properties: {
+                title: 'The Worst Fanfic Ever',
+                text: 'Ron and Hermione broke up. The End.',
+                rating: 'N for no one',
+              },
+            }),
+            createNode('FANFIC', {
+              properties: {
+                title: 'The Most Scandelous Fanfic Ever',
+                text: 'Harry and Draco kiss passionately. The End.',
+                rating: 'T for teens',
+              },
+            }),
+          ]);
+        });
+    });
+
+    it('returns only one thing', function () {
+      return Podfic.findOne()
+        .then(function (podfic) {
+          expect(podfic).to.be.an('object');
+          expect(podfic).not.to.be.an('array');
         });
     });
   });
