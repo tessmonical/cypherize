@@ -179,4 +179,86 @@ describe('Model functions', function () {
         });
     });
   });
+
+
+  describe('Model.delete', function () {
+    let Podfic;
+    let Fanfic;
+    beforeEach(function () {
+      Podfic = defineModel({
+        name: 'podfic',
+        fields: ['title', 'text', 'rating'],
+      });
+      Fanfic = defineModel({
+        name: 'fanfic',
+        fields: ['title', 'text', 'rating'],
+      });
+      const session = driver.session();
+      return session.run('MATCH (n) DETACH DELETE (n)')
+        .then(function () {
+          session.close();
+        })
+        .then(function () {
+          return Promise.all([
+            createNode('PODFIC', {
+              properties: {
+                title: 'The Best Fanfic Ever',
+                text: 'Ron and Hermione went on a date. The End.',
+                rating: 'E for everyone',
+              },
+            }),
+            createNode('FANFIC', {
+              properties: {
+                title: 'The Best Fanfic Ever',
+                text: 'Ron and Hermione went on a date. The End.',
+                rating: 'E for everyone',
+              },
+            }),
+            createNode('PODFIC', {
+              properties: {
+                title: 'The Worst Fanfic Ever',
+                text: 'Ron and Hermione broke up. The End.',
+                rating: 'N for no one',
+              },
+            }),
+            createNode('FANFIC', {
+              properties: {
+                title: 'The Most Scandelous Fanfic Ever',
+                text: 'Harry and Draco kiss passionately. The End.',
+                rating: 'T for teens',
+              },
+            }),
+          ]);
+        });
+    });
+
+    it('Deletes all models if no options are passed', function () {
+      return Fanfic.delete()
+        .then(function () {
+          return Promise.all([
+            Podfic.findAll(),
+            Fanfic.findAll(),
+          ]);
+        })
+        .then(function ([podfics, fanfics]) {
+          expect(podfics).to.have.lengthOf(2);
+          expect(fanfics).to.have.lengthOf(0);
+        });
+    });
+
+    it('Deletes the correct things (and nothing else)', function () {
+      return Fanfic.delete({
+        where: {
+          rating: 'E for everyone',
+        },
+      })
+        .then(function () {
+          return Fanfic.findAll();
+        })
+        .then(function (fanfics) {
+          expect(fanfics).to.have.lengthOf(1);
+          expect(fanfics[0]).to.have.property('title', 'The Most Scandelous Fanfic Ever');
+        });
+    });
+  });
 });
