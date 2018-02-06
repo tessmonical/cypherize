@@ -1,12 +1,35 @@
 # Cypherize
 
 ## Goal
-To create a package which can be used similarly to Sequelize on the backend, but which connects a Cypher-based database (Neo4j) to the application instead of a SQL-based one like PostgreSQL.
+Cypherize is an OGM which connects a Cypher-based database (Neo4j) to a JS application. Cypherize is intended to be familiar to those who have used Sequelize.
 
-## Usage
-Don't use this yet, it's not ready!
-Very very much in development still. Tests are being written, bugs are being found, etc. I'll update this readme when the basics are here.
+## Functionality
+
+- [✓] TESTED (works to the best of my knowledge)
+- [ ] UNTESTED (may work)
+- [x] UNTESTED (don't use)
+
+### Low level
+- [✓] We can connect to the database and use the methods in connection.js and nodes.js to...
+
+- [✓] add node
+- [✓] find nodes
+- [✓] update nodes
+- [✓] delete node
+- [✓] add connection
+- [✓] find connections
+- [✓] update connections
+- [✓] delete connection
+
+
+### Higher level
+- [✓] We can define models which have a name and fields
+- These models have methods...
+  - [✓] Model.create(options)
+  - [✓] Model.findAll(options)
+  - [ ] Model.findOne(options)
+  - [ ] Model.delete(options)
 
 ## Caveats and warnings
 - Key names for properties on a node/connection set using Cypherize must adhere to the following rules
-  - Alphanumeric and underscore are the only characters allowed
+  - Alphanumeric and underscore are the only characters allowed (Any other characters will be stripped)
