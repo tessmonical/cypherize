@@ -258,6 +258,13 @@ describe('Node Tests', function () {
         });
     });
 
+    it('accepts a limit on the number of nodes', function () {
+      return findNodes({ label: 'CHARACTER', limit: 1 })
+        .then((nodeList) => {
+          expect(nodeList).to.have.lengthOf(1);
+        });
+    });
+
     it('returns array of objects, with the correct properties', function () {
       return findNodes({
         label: 'CHARACTER',
