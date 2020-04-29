@@ -3,6 +3,17 @@
 ## Goal
 Cypherize is an OGM which connects a Cypher-based database (Neo4j) to a JS application. Cypherize is intended to be familiar to those who have used Sequelize.
 
+## Requirements
+- Neo4j must be installed
+
+## Setup
+0. Install Neo4j
+1. Create a database in Neo4j, noting what password you use at setup.
+2. Copy `secrets_example.js` and rename your copy to `secrets.js`. Add the password for your database to the appropriate spot.
+3. `npm install`
+4. Run tests (`npm test`) and ensure they pass.
+5. You should be ready to go!
+
 ## Functionality
 
 - [x] TESTED (works to the best of my knowledge)
