@@ -8,6 +8,24 @@ const { driver } = require('../../lib');
 
 
 describe('Model functions', function () {
+  before(function () {
+    const session = driver.session();
+    session.run('MATCH (n) DETACH DELETE (n)')
+      .then(function () {
+        session.close();
+      })
+      .catch(err => console.err);
+  });
+
+  after(function () {
+    const session = driver.session();
+    session.run('MATCH (n) DETACH DELETE (n)')
+      .then(function () {
+        session.close();
+      })
+      .catch(err => console.err);;
+  });
+
   describe('Model.create', function () {
     let Character;
     before(function () {
@@ -15,20 +33,7 @@ describe('Model functions', function () {
         name: 'character',
         fields: ['name', 'gender'],
       });
-      const session = driver.session();
-      session.run('MATCH (n) DETACH DELETE (n)')
-        .then(function () {
-          session.close();
-        });
-    });
-
-    after(function () {
-      const session = driver.session();
-      session.run('MATCH (n) DETACH DELETE (n)')
-        .then(function () {
-          session.close();
-        });
-    });
+    })
 
     it('Creates the node in the database', function () {
       return Character.create({

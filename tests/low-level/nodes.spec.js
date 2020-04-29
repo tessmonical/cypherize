@@ -130,7 +130,8 @@ describe('Node Tests', function () {
         .then(function (results) {
           const node = results.records[0].get(0);
           expect(node.properties).to.contain.property('favoriteFood', 'tuna');
-        });
+        })
+        .then(function () { session.close(); });
     });
 
     it('returns the modified node', function () {
@@ -142,7 +143,8 @@ describe('Node Tests', function () {
         })
         .then(function (returnedNode) {
           expect(returnedNode.properties).to.contain.property('bestFriendName', 'timothy');
-        });
+        })
+        .then(function () { session.close(); });
     });
   });
 
@@ -180,7 +182,8 @@ describe('Node Tests', function () {
           const node = results.records[0].get(0);
           expect(node.properties).to.contain.property('favoriteFood', 'tuna');
         })
-        .catch(console.error);
+        .catch(console.error)
+        .then(function () { session.close(); });
     });
 
 
