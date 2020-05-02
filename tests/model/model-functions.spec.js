@@ -41,20 +41,16 @@ describe('Model functions', function () {
         gender: 'female',
       })
         .then(function (chararcter) {
-          console.log(chararcter)
           return findNodes({});
         })
         .then(function (nodes) {
-
-          console.log(nodes[0])
-
           expect(nodes).to.have.lengthOf(1);
           expect(nodes[0].properties).to.have.property('name', 'Hermione Granger');
           expect(nodes[0].properties).to.have.property('gender', 'female');
         });
     });
 
-    xit('Returns an object with the correct properties', function () {
+    it('Returns an object with the correct properties', function () {
       Character.create({
         name: 'Harry Potter',
         gender: 'male',
@@ -67,7 +63,7 @@ describe('Model functions', function () {
     });
   });
 
-  xdescribe('Model.findAll', function () {
+  describe('Model.findAll', function () {
     let Fanfic;
     before(function () {
       Fanfic = defineModel({
