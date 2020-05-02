@@ -4,7 +4,7 @@
   "description": "A OGM for Neo4j",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV='TEST' mocha tests/**/*.spec.js"
+    "test": "env NODE_ENV='TEST' mocha tests/**/*.spec.js"
   },
   "repository": {
     "type": "git",
