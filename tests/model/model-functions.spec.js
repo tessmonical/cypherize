@@ -129,7 +129,7 @@ describe('Model functions', function () {
     });
   });
 
-  xdescribe('Model.findOne', function () {
+  describe('Model.findOne', function () {
     let Podfic;
     before(function () {
       Podfic = defineModel({
@@ -185,7 +185,7 @@ describe('Model functions', function () {
   });
 
 
-  xdescribe('Model.delete', function () {
+  describe('Model.delete', function () {
     let Podfic;
     let Fanfic;
     beforeEach(function () {
