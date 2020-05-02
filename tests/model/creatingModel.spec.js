@@ -26,11 +26,10 @@ describe('Defining a Model', function () {
     expect(Model.findOne).to.be.a('function');
     expect(Model.create).to.be.a('function');
     expect(Model.delete).to.be.a('function');
-    expect(Model.prototype.setProperty).to.be.a('function');
   });
 
   it('defineModel returns function with correct properties', function () {
-    expect(Model._name).to.be.a('string');
-    expect(Model._fields).to.be.an('array');
+    expect(Model.name).to.be.a('string');
+    expect(Model.allowedFields).to.be.an('array');
   });
 });
