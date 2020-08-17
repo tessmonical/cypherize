@@ -17,16 +17,16 @@ describe('Connection Tests', function () {
       const query =
         'CREATE (n1:THING {name:"thing1", _id:"thing1"}), (n2:THING {name:"thing2", _id:"thing2"}) RETURN n1,n2;';
       const session = driver.session();
-      return session.run(query)
-        .then(function () { session.close(); });
+      return session.run(query).then()
+        .finally(function () { session.close(); });
     });
 
     // clear DB after each test
     afterEach(function () {
       const query = 'MATCH (n) DETACH DELETE n;';
       const session = driver.session();
-      return session.run(query)
-        .then(function () { session.close(); });
+      return session.run(query).then()
+        .finally(function () { session.close(); });
     });
 
     it('Creates the connection', function () {
@@ -46,7 +46,7 @@ describe('Connection Tests', function () {
           const connection = results.records[0].get(0);
           expect(connection.type).to.equal('IS_SIBLING_OF');
         })
-        .then(function () { session.close(); });
+        .finally(function () { session.close(); });
     });
 
 
@@ -63,7 +63,7 @@ describe('Connection Tests', function () {
         .then(function (connection) {
           expect(connection.type).to.equal('IS_SIBLING_OF');
         })
-        .then(function () { session.close(); });
+        .finally(function () { session.close(); });
     });
   });
 
@@ -74,7 +74,8 @@ describe('Connection Tests', function () {
         'CREATE (n1:CHARACTER {name:"Ron Weasley", _id:"hpron"})-[:LOVES {_id:"ronmionehr321"}]->(n2:CHARACTER {name:"Hermione Granger", _id:"hphermione"})-[:LOVES {_id:"ronmionerh123"}]->(n1) RETURN n1,n2;';
       const session = driver.session();
       return session.run(query)
-        .then(function () { session.close(); });
+        .then()
+        .finally(function () { session.close(); });
     });
 
     it('can delete a connection', function () {
@@ -92,17 +93,15 @@ describe('Connection Tests', function () {
         .then(function (results) {
           expect(results.records).to.have.lengthOf(0); // Hermione loves no one now
         })
-        .then(function () { session.close(); });
+        .finally(function () { session.close(); });
     });
 
     // clear DB after each test
     afterEach(function () {
       const query = 'MATCH (n) DETACH DELETE n;';
       const session = driver.session();
-      return session.run(query)
-        .then(function () {
-          session.close();
-        });
+      return session.run(query).then()
+        .finally(function () { session.close();});
     });
   });
 
@@ -110,15 +109,15 @@ describe('Connection Tests', function () {
     beforeEach(function () {
       const query = 'CREATE (n1:CHARACTER {name:"Harry Potter", _id:"hpharry1980"})-[:LOVES {_id:"ginnyharry4eva99999"}]->(n2:CHARACTER {name:"Ginny Weasley", _id:"hpGinny3q4957"})-[:LOVES {_id:"ginnyharry4eva11111", random_attribute:"best ship" }]->(n1) RETURN n1,n2;';
       const session = driver.session();
-      return session.run(query)
-        .then(function () { session.close(); });
+      return session.run(query).then()
+        .finally(function () { session.close(); });
     });
     // clear DB after each test
     afterEach(function () {
       const query = 'MATCH (n) DETACH DELETE n;';
       const session = driver.session();
-      return session.run(query)
-        .then(function () { session.close(); });
+      return session.run(query).then()
+        .finally(function () { session.close(); });
     });
 
     it('Returns the correct node', function () {
@@ -126,7 +125,6 @@ describe('Connection Tests', function () {
         .then(function (connection) {
           expect(connection.properties).to.include({ random_attribute: 'best ship' });
         })
-        .catch(console.error);
     });
   });
 });

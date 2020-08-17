@@ -10,19 +10,14 @@ const { driver } = require('../../lib');
 describe('Model functions', function () {
   before(function () {
     const session = driver.session();
-    session.run('MATCH (n) DETACH DELETE (n)')
-      .then(function () {
-        session.close();
-      })
-      .catch(err => console.err);
+    session.run('MATCH (n) DETACH DELETE (n)').then()
+      .finally(function () { session.close();  })
   });
 
   after(function () {
     const session = driver.session();
     session.run('MATCH (n) DETACH DELETE (n)')
-      .then(function () {
-        session.close();
-      })
+      .then(function () { session.close();  })
       .catch(err => console.err);;
   });
 
@@ -56,9 +51,8 @@ describe('Model functions', function () {
         gender: 'male',
       })
         .then(function (createdNode) {
-          expect(createdNode.name).to.equal('Harry Potter');
-          expect(createdNode.gender).to.equal('male');
-          expect(createdNode._id).to.be.a('string');
+          expect(createdNode.fields.name).to.equal('Harry Potter');
+          expect(createdNode.fields.gender).to.equal('male');
         });
     });
   });
@@ -72,9 +66,7 @@ describe('Model functions', function () {
       });
       const session = driver.session();
       return session.run('MATCH (n) DETACH DELETE (n)')
-        .then(function () {
-          session.close();
-        })
+
         .then(function () {
           return Promise.all([
             createNode('PODFIC', {
@@ -106,7 +98,8 @@ describe('Model functions', function () {
               },
             }),
           ]);
-        });
+        })
+        .finally(function () {  session.close();  })
     });
 
     it('Can find all models of specific type', function () {
@@ -139,9 +132,6 @@ describe('Model functions', function () {
       const session = driver.session();
       return session.run('MATCH (n) DETACH DELETE (n)')
         .then(function () {
-          session.close();
-        })
-        .then(function () {
           return Promise.all([
             createNode('PODFIC', {
               properties: {
@@ -172,7 +162,8 @@ describe('Model functions', function () {
               },
             }),
           ]);
-        });
+        })
+        .finally(function () { session.close();  })
     });
 
     it('returns only one thing', function () {
@@ -200,9 +191,6 @@ describe('Model functions', function () {
       const session = driver.session();
       return session.run('MATCH (n) DETACH DELETE (n)')
         .then(function () {
-          session.close();
-        })
-        .then(function () {
           return Promise.all([
             createNode('PODFIC', {
               properties: {
@@ -233,7 +221,8 @@ describe('Model functions', function () {
               },
             }),
           ]);
-        });
+        })
+        .finally(function () { session.close();  })
     });
 
     it('Deletes all models if no options are passed', function () {
