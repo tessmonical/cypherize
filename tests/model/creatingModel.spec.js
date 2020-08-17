@@ -30,6 +30,8 @@ describe('Defining a Model', function () {
 
   it('defineModel returns function with correct properties', function () {
     expect(Model.name).to.be.a('string');
+    expect(Model.name).to.eq('CHARACTER');
     expect(Model.allowedFields).to.be.an('array');
+    expect(Model.allowedFields).to.deep.equal(['name', 'gender'])
   });
 });

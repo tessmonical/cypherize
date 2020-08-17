@@ -38,7 +38,7 @@ Cypherize is an OGM which connects a Cypher-based database (Neo4j) to a JS appli
   - [x] Model.findAll(options)
   - [x] Model.findOne(options)
   - [x] Model.delete(options)
-  - [ ] Model.setProperty(options)
+  - [x] model.setProperty(options)
 
 ## Caveats and warnings
 - Key names for properties on a node/connection set using Cypherize must adhere to the following rules
